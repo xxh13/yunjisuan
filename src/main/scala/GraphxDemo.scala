@@ -18,7 +18,7 @@ object GraphxDemo{
       "name" -> 1
     )
 
-    userCollection.find().limit(1000).toList
+    userCollection.find(MongoDBObject.empty, filter_user).limit(1000).toList
       .map(e => Tuple2(e.get("id").toString.toLong, e.get("name").toString))
   }
 
@@ -31,7 +31,7 @@ object GraphxDemo{
         "name" -> 1
       )
 
-      stockCollection.find().toList
+      stockCollection.find(MongoDBObject.empty, filter_stock).toList
         .map(e => Tuple2(e.get("full_code").toString.substring(2).toLong, e.get("name").toString))
     }
 
