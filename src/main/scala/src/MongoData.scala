@@ -14,9 +14,13 @@ class MongoData {
     post_collection
   }
 
-  def readData(collection: MongoCollection, filter: MongoDBObject) : List[DBObject] = {
+  def readData(collection: MongoCollection, filter: MongoDBObject, limit: Int) : List[DBObject] = {
 
-      collection.find(MongoDBObject.empty,filter).limit(10).toList
+      if(limit == -1) {
+        collection.find(MongoDBObject.empty,filter).toList
+      } else {
+        collection.find(MongoDBObject.empty, filter).limit(limit).toList
+      }
 
   }
 }
