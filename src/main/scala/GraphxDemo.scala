@@ -9,28 +9,30 @@ object GraphxDemo{
 
   }
 
-  def getUser(): List[(Long, String)] = {
-    val mongoHandle: MongoData = new MongoData()
-    val userCollection = mongoHandle.getCollections("localhost", 27017, "test", "user")
+  // get user vertex
+  def getUser(mongoClient: MongoClient, collection: String): List[(Long, String)] = {
+    val userCollection = mongoClient("test")(collection)
     val filter_user = MongoDBObject(
       "id" -> 1,
       "stock_list" -> 1,
       "name" -> 1
     )
 
-    mongoHandle.readData(userCollection, filter_user, 100)
-      .map(e => Tuple2(e.get("id").toString.substring(2).toLong, e.get("name").toString))
+    userCollection.find().limit(1000).toList
+      .map(e => Tuple2(e.get("id").toString.toLong, e.get("name").toString))
   }
 
-  def getStock(): List[(Long, String)] = {
-    val mongoHandle: MongoData = new MongoData()
-    val stockColllection = mongoHandle.getCollections("localhost", 27017, "test", "stock")
-    val filter_stock = MongoDBObject(
-      "_id" -> 0,
-      "full_code" -> 1,
-      "name" -> 1
-    )
-    mongoHandle.readData(stockColllection, filter_stock, -1).
-      map(e => Tuple2(e.get("full_code").toString.substring(2).toLong, e.get("name").toString))
-  }
+  // get stock vertex
+  def getStock(mongoClient: MongoClient, collection: String): List[(Long, String)] = {
+      val stockCollection = mongoClient("test")(collection)
+      val filter_stock = MongoDBObject(
+        "_id" -> 0,
+        "full_code" -> 1,
+        "name" -> 1
+      )
+
+      stockCollection.find().toList
+        .map(e => Tuple2(e.get("full_code").toString.substring(2).toLong, e.get("name").toString))
+    }
+
 }
